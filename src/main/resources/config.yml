@@ -1,0 +1,62 @@
+##################################################################
+#  _____                 _           _     _                     #
+# /  __ \               | |         | |   | |                    #
+# | /  \/ ___  _ __ ___ | |__   __ _| |_  | |     ___   __ _     #
+# | |    / _ \| '_ ` _ \| '_ \ / _` | __| | |    / _ \ / _` |    #
+# | \__/\ (_) | | | | | | |_) | (_| | |_  | |___| (_) | (_| |    #
+# \____/\___/|_| |_| |_|_.__/ \__,_|\__| \_____/\___/ \__, |     #
+#                                                      __/ |     #
+#                                                     |___/      #
+#                                                                #
+##################################################################
+
+
+#############################################################################################
+# Developed by clonalejandro                                                                #
+#                                                                                           #
+# -= SOCIAL NETWORKS =-                                                                     #
+#                                                                                           #
+# Website: https://clonalejandro.me                                                         #
+# GitHub: https://github.com/clonalejandro                                                  #
+# GitLab: https://gitlab.com/clonalejandro                                                  #
+# YouTube: https://youtube.com/c/clonalejandromcbGameplays                                  #
+# Twitter: https://twitter.com/clonalejandro11                                              #
+# Google+: https://plus.google.com/u/0/+clonalejandromcbGameplays                           #
+# Spigot: https://www.spigotmc.org/members/clonalejandro.28979/                             #
+# Bukkit: https://bukkit.org/members/clonalejandro.91257534/                                #
+# GoogleScholar: https://scholar.google.es/citations?user=DiDtLgoAAAAJ&hl=es                #
+# McMarket: http://www.mc-market.org/members/34499/                                         #
+# Enjin: https://www.enjin.com/profile/13291450                                             #
+# KeyBase: https://keybase.io/clonalejandro                                                 #
+# XenForo: https://xenfacil.com/miembros/clonalejandro.1764/                                #
+# SpainPvP: https://spainpvp.com/members/clonalejandro.956/                                 #
+# DevBukkit: https://dev.bukkit.org/members/clonalejandro                                   #
+# SoundCloud: https://soundcloud.com/clonalejandro-mcb                                      #
+# Steam: https://steamcommunity.com/id/clonalejandro                                        #
+# StackOverFlow: https://stackoverflow.com/users/8099410/clonalejandro-mcb                  #
+# StackExChange: https://stackexchange.com/users/11026741/clonalejandro-mcb                 #
+# SocialBlade: https://socialblade.com/youtube/channel/UCGjUzh0rhZQeK_bdz4QcDIg             #
+# Sellfy: https://sellfy.com/clonalejandro                                                  #
+# Ask: https://ask.fm/alejandro_prc                                                         #
+#############################################################################################
+
+
+# PUT in "Worlds" your worlds name, you want do not use CombatLog
+Worlds:
+- Uno
+- Dos
+
+Death:
+  Message: "&9&lCLOG> &fThe player &e{KILLED} &fhas been killed by &e{KILLER}" # Message you want send when player death in CombatLog
+  MessageKilled: "&9&lCLOG> &fYou has been punished" # Message whose recibe the player killed
+Mob:
+  Name: "&e&lOUT" # The prefix of surrogate
+  Time: 600 # Time in seconds for death the surrogate
+
+Combat:
+  Time: 15 # Time in seconds for passenger CombatLog
+  Messager: false # Enable / Disable send message while player stay in Combat
+  Message: "&9&lCLOG» &fYou are in &eCombatLog &fmode" # Only run when "Messager" is true
+
+
+debug: true # Don't Touch
