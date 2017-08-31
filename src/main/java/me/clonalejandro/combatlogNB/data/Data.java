@@ -2,6 +2,7 @@ package me.clonalejandro.combatlogNB.data;
 
 import me.clonalejandro.combatlogNB.Main;
 
+import me.clonalejandro.combatlogNB.utils.CombatLog;
 import org.bukkit.entity.Player;
 
 /**
@@ -24,13 +25,9 @@ public class Data {
 
 
     /** SMALL CONSTRUCTORS **/
-
-    private static Main plugin;
-
     public Data(Main instance, Player player){
         instance.getDataManager().getData().addDefault("data.players." + player.getName(), player.getName());
         instance.getDataManager().saveData();
-        plugin = instance;
     }
 
 
@@ -41,7 +38,7 @@ public class Data {
      * @return
      */
     public static boolean haveData(String data){
-        if (plugin.getDataManager().getData().get("data.players." + data) == data)
+        if (Main.instance.getDataManager().getData().get("data.players." + data) == data)
             return true;
         else return false;
     }
@@ -51,7 +48,7 @@ public class Data {
      * @param data
      */
     public static void removeData(Object data){
-        try { plugin.getConfig().set("data.players." + data, null); }
+        try { Main.instance.getConfig().set("data.players." + data, null); }
         catch (Exception ex) { ex.printStackTrace(); }
     }
 
