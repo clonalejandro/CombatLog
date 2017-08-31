@@ -93,7 +93,7 @@ class Handlers {
         e.getDrops().clear();
 
         final Entity entity = e.getEntity();
-        String name = entity.getCustomName();
+        String name = entity.getCustomName() == null ? entity.getName() : entity.getCustomName();
         final String prefix = plugin.getCManager().getMobName();
 
         name = name.replace(" ", "");//Clear empty spaces
