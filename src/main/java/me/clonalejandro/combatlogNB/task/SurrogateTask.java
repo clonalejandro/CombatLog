@@ -1,6 +1,7 @@
 package me.clonalejandro.combatlogNB.task;
 
 import me.clonalejandro.combatlogNB.Main;
+import me.clonalejandro.combatlogNB.listeners.Handlers;
 import me.clonalejandro.combatlogNB.utils.CombatLog;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -28,10 +29,12 @@ public class SurrogateTask extends BukkitRunnable {
 
     private int timeDespawn;
     private final Player player;
+    private final Handlers handlers;
 
     public SurrogateTask(Main instance, Player player){
         timeDespawn = instance.getCManager().getMobTime();
         this.player = player;
+        handlers = new Handlers(instance);
     }
 
 
@@ -45,7 +48,7 @@ public class SurrogateTask extends BukkitRunnable {
             int id = CombatLog.ID.get(player);
             CombatLog.ID.remove(player);
             CombatLog.INVENTORY.remove(id);
-            CombatLog.SURROGATE.remove(id);
+            handlers.getSurround().despawn(id);
             cancel();
         }
     }

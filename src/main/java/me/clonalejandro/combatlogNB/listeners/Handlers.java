@@ -31,14 +31,14 @@ import org.bukkit.inventory.ItemStack;
  * All rights reserved for clonalejandro ©combatlogNB 2017 / 2018
  */
 
-class Handlers {
+public class Handlers {
 
 
     /** SMALL CONSTRUCTORS **/
 
     private final Main plugin;
 
-    Handlers(Main instance){
+    public Handlers(Main instance){
         plugin = instance;
     }
 
@@ -80,9 +80,9 @@ class Handlers {
     }
 
 
-    void surrogateDamage(Player player){
-        if (CombatLog.ID.get(player) != null)
-            surrogateTask.cancel();
+    void surrogateDamage(){
+        Bukkit.getConsoleSender().sendMessage("zoy kk todo va chachi");
+        surrogateTask.cancel();
     }
 
 
@@ -97,7 +97,7 @@ class Handlers {
         final String prefix = plugin.getCManager().getMobName();
 
         name = name.replace(" ", "");//Clear empty spaces
-        name = name.replace(prefix, "");//Clear prefix
+        name = name.replace(Manager.messageColors(prefix), "");//Clear prefix
         name = name.replace(Manager.messageColors("&f"), "");//Clear white name
 
         final Player player = Bukkit.getPlayer(name);
@@ -129,7 +129,7 @@ class Handlers {
     /**
      * @return
      */
-    WitherSkeleton getSurround(){
+    public WitherSkeleton getSurround(){
         return surround;
     }
 
@@ -141,7 +141,7 @@ class Handlers {
      */
     private void leaveFunctions(Player player){
         final int id = CombatLog.ID.get(player);
-        final String name = Manager.messageColors(plugin.getCManager().getMobName() + "&f" + player.getName());
+        final String name = Manager.messageColors(plugin.getCManager().getMobName() + " &f" + player.getName());
 
         surround.spawn(id, name, player.getLocation());
 

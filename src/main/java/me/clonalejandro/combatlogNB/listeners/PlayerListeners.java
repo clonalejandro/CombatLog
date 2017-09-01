@@ -54,14 +54,14 @@ public class PlayerListeners implements Listener {
         final String playerName = e.getPlayer().getName();
         final Player player = e.getPlayer();
 
-        if (Data.haveData(playerName)){
-            if (CombatLog.ID.get(player) != null || CombatLog.ID.get(player) != 0){
-                final int id = CombatLog.ID.get(player);
-                handlers.getSurround().despawn(id);
-                CombatLog.ID.remove(player);
-                CombatLog.INVENTORY.remove(id);
-            }
-            else player.setHealth(0.0D);
+        if (Data.haveData(playerName))
+            player.setHealth(0.0D);
+
+        if (CombatLog.ID.get(player) != null){
+            final int id = CombatLog.ID.get(player);
+            handlers.getSurround().despawn(id);
+            CombatLog.ID.remove(player);
+            CombatLog.INVENTORY.remove(id);
         }
     }
 
@@ -70,7 +70,7 @@ public class PlayerListeners implements Listener {
     public void onPlayerLeave(PlayerQuitEvent e){
         Player player = e.getPlayer();
 
-        if (CombatLog.ID.get(player) != null || CombatLog.ID.get(player) != 0)
+        if (CombatLog.ID.get(player) != null)
             handlers.onLeave(player);
     }
 
@@ -79,7 +79,7 @@ public class PlayerListeners implements Listener {
     public void onPlayerKick(PlayerKickEvent e){
         Player player = e.getPlayer();
 
-        if (CombatLog.ID.get(player) != null || CombatLog.ID.get(player) != 0)
+        if (CombatLog.ID.get(player) != null)
             handlers.onLeave(player);
     }
 

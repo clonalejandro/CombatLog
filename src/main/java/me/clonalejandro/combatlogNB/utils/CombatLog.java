@@ -4,6 +4,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -29,7 +30,6 @@ public class CombatLog {
 
     public static HashMap<Player, Integer> ID = new HashMap<>();
     public static HashMap<Integer, Inventory> INVENTORY = new HashMap<>();
-
     public static HashMap<Integer, Object> SURROGATE = new HashMap<>();
 
 
