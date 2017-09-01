@@ -1,8 +1,8 @@
 package me.clonalejandro.combatlogNB.data;
 
 import me.clonalejandro.combatlogNB.Main;
-
 import me.clonalejandro.combatlogNB.utils.CombatLog;
+
 import org.bukkit.entity.Player;
 
 /**

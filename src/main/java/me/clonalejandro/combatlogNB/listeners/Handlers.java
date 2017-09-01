@@ -6,10 +6,9 @@ import me.clonalejandro.combatlogNB.task.SurrogateTask;
 import me.clonalejandro.combatlogNB.utils.CombatLog;
 import me.clonalejandro.combatlogNB.Main;
 import me.clonalejandro.combatlogNB.task.DamageTask;
-
 import me.clonalejandro.combatlogNB.utils.Manager;
+
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDeathEvent;
@@ -45,8 +44,8 @@ class Handlers {
 
     private final WitherSkeleton surround = new WitherSkeleton();
 
-    private int idTask;
-    private int idSTask;
+    private DamageTask damageTask;
+    private SurrogateTask surrogateTask;
 
 
     /** REST **/
@@ -64,10 +63,10 @@ class Handlers {
             CombatLog.ID.put(player, id);
             CombatLog.INVENTORY.put(id, inventory);
 
-            DamageTask task = getTask(player);
+            DamageTask task = new DamageTask(plugin, player);
 
-            plugin.getServer().getScheduler().scheduleAsyncRepeatingTask(plugin, task, 0L, 20L);
-            idTask = task.getTaskId();
+            task.runTaskTimer(plugin, 1L, 20L);
+            damageTask = task;
         }
     }
 
@@ -76,13 +75,14 @@ class Handlers {
      * @param player
      */
     void onLeave(Player player){
-        plugin.getServer().getScheduler().cancelTask(idTask);
+        damageTask.cancel();
         leaveFunctions(player);
     }
 
 
-    void surrogateDamage(){
-        plugin.getServer().getScheduler().cancelTask(idSTask);
+    void surrogateDamage(Player player){
+        if (CombatLog.ID.get(player) != null)
+            surrogateTask.cancel();
     }
 
 
@@ -138,24 +138,6 @@ class Handlers {
 
     /**
      * @param player
-     * @return
-     */
-    private DamageTask getTask(Player player){
-        return new DamageTask(plugin, player);
-    }
-
-
-    /**
-     * @param player
-     * @return
-     */
-    private SurrogateTask getSTask(Player player){
-        return new SurrogateTask(plugin, player);
-    }
-
-
-    /**
-     * @param player
      */
     private void leaveFunctions(Player player){
         final int id = CombatLog.ID.get(player);
@@ -163,10 +145,10 @@ class Handlers {
 
         surround.spawn(id, name, player.getLocation());
 
-        SurrogateTask task = getSTask(player);
+        SurrogateTask task = new SurrogateTask(plugin, player);
 
-        plugin.getServer().getScheduler().scheduleAsyncRepeatingTask(plugin, task, 0L, 20L);
-        idSTask = task.getTaskId();
+        task.runTaskTimer(plugin, 1L, 20L);
+        surrogateTask = task;
     }
 
 

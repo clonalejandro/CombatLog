@@ -4,6 +4,7 @@ import me.clonalejandro.combatlogNB.Main;
 import me.clonalejandro.combatlogNB.utils.Manager;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -49,8 +50,8 @@ public class SurrogateListeners implements Listener {
         final String prefix = Manager.messageColors(plugin.getCManager().getMobName());
 
         if ((main.getCustomName() == null ? main.getName() : main.getCustomName()).contains(prefix)){
-            if (damager.getType() == EntityType.PLAYER)
-                handlers.surrogateDamage();
+            if (damager != null && damager.getType() == EntityType.PLAYER)
+                handlers.surrogateDamage((Player) damager);
             else e.setCancelled(true);
         }
     }
