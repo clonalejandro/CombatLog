@@ -44,9 +44,6 @@ public class Handlers {
 
     private final WitherSkeleton surround = new WitherSkeleton();
 
-    private DamageTask damageTask;
-    private SurrogateTask surrogateTask;
-
 
     /** REST **/
 
@@ -55,18 +52,32 @@ public class Handlers {
      */
     void onDamage(Player player){
         Inventory inventory = player.getInventory();
-        double health = player.getHealth();
 
         if (CombatLog.ID.get(player) == null){
+            if (DamageTask.MESSAGER)
+                player.sendMessage(DamageTask.MSGIN);
+
             final int id = CombatLog.ID.size() + 1;
 
             CombatLog.ID.put(player, id);
             CombatLog.INVENTORY.put(id, inventory);
-
+            CombatLog.GETTER.put(id, player);
             DamageTask task = new DamageTask(plugin, player);
 
             task.runTaskTimer(plugin, 1L, 20L);
-            damageTask = task;
+
+            CombatLog.TASKID.put(player, task.getTaskId());
+        }
+        else {
+            int id = CombatLog.TASKID.get(player);
+
+            Bukkit.getScheduler().cancelTask(id);
+            CombatLog.TASKID.remove(player);
+            DamageTask task = new DamageTask(plugin, player);
+
+            task.runTaskTimer(plugin, 1L, 20L);
+
+            CombatLog.TASKID.put(player, task.getTaskId());
         }
     }
 
@@ -75,14 +86,46 @@ public class Handlers {
      * @param player
      */
     void onLeave(Player player){
-        damageTask.cancel();
+        int id = CombatLog.TASKID.get(player);
+        Bukkit.getScheduler().cancelTask(id);
+        CombatLog.TASKID.remove(player);
         leaveFunctions(player);
     }
 
 
-    void surrogateDamage(){
-        Bukkit.getConsoleSender().sendMessage("zoy kk todo va chachi");
-        surrogateTask.cancel();
+    /**
+     * @param entity
+     * @param player
+     */
+    void surrogateDamage(Entity entity, Player player){
+        Player p = null;
+
+        final String prefix = plugin.getCManager().getMobName();
+        String name = entity.getCustomName() == null ? entity.getName() : entity.getCustomName();
+
+        name = name.replace(" ", "");//Clear empty spaces
+        name = name.replace(Manager.messageColors(prefix), "");//Remove prefix
+        name = name.replace(Manager.messageColors("&f"), "");//Fix without color name
+
+        for (Integer i : CombatLog.ID.values()){
+            final Player lp = CombatLog.GETTER.get(i);
+            final String str = lp.getName();
+            if (name.equalsIgnoreCase(str))
+                p = lp;
+        }
+
+        assert p != null;
+
+        final int id = CombatLog.ID.get(p);
+        final int taskID = CombatLog.TASKSURROUNDER.get(id);
+
+        Bukkit.getScheduler().cancelTask(taskID);
+        CombatLog.TASKSURROUNDER.remove(id);
+
+        SurrogateTask task = new SurrogateTask(plugin, player);
+        task.runTaskTimer(plugin, 1L, 20L);
+
+        CombatLog.TASKSURROUNDER.put(id, task.getTaskId());
     }
 
 
@@ -100,11 +143,22 @@ public class Handlers {
         name = name.replace(Manager.messageColors(prefix), "");//Clear prefix
         name = name.replace(Manager.messageColors("&f"), "");//Clear white name
 
-        final Player player = Bukkit.getPlayer(name);
-        final Player killer = (Player) e.getEntity();
+        Player player = null;
+
+        for (Integer i : CombatLog.ID.values()){
+            final Player p = CombatLog.GETTER.get(i);
+            final String str = p.getName();
+            if (str.equalsIgnoreCase(name))
+                player = p;
+        }
+
+        final Player killer = e.getEntity().getKiller();
 
         final int id = CombatLog.ID.get(player);
         final Inventory inventory = CombatLog.INVENTORY.get(id);
+
+        int taskID = CombatLog.TASKSURROUNDER.get(id);
+        Bukkit.getScheduler().cancelTask(taskID);
 
         ItemStack[] items = inventory.getContents();
 
@@ -113,6 +167,7 @@ public class Handlers {
 
         String message = plugin.getCManager().getDeathMessage();
 
+        assert player != null;
         message = message.replace("{KILLED}", player.getName());
         message = message.replace("{KILLER}", killer.getName());
 
@@ -121,6 +176,7 @@ public class Handlers {
         CombatLog.ID.remove(player);
         CombatLog.INVENTORY.remove(id);
         CombatLog.SURROGATE.remove(id);
+        CombatLog.GETTER.remove(id);
 
         new Data(plugin, player);
     }
@@ -145,10 +201,10 @@ public class Handlers {
 
         surround.spawn(id, name, player.getLocation());
 
-        surrogateTask = new SurrogateTask(plugin, player);
+        SurrogateTask task = new SurrogateTask(plugin, player);
+        task.runTaskTimer(plugin, 1L, 20L);
 
-        surrogateTask.runTaskTimer(plugin, 1L, 20L);
-        Bukkit.broadcastMessage("Ehto funciona ahora mihmo");
+        CombatLog.TASKSURROUNDER.put(id, task.getTaskId());
     }
 
 

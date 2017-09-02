@@ -17,6 +17,9 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by alejandrorioscalera
  * On 31/8/17
@@ -54,14 +57,18 @@ public class PlayerListeners implements Listener {
         final String playerName = e.getPlayer().getName();
         final Player player = e.getPlayer();
 
-        if (Data.haveData(playerName))
+        if (Data.haveData(playerName)) {
+            player.getInventory().clear();
             player.setHealth(0.0D);
+        }
 
         if (CombatLog.ID.get(player) != null){
+            Bukkit.broadcastMessage("Wayy");
             final int id = CombatLog.ID.get(player);
             handlers.getSurround().despawn(id);
             CombatLog.ID.remove(player);
             CombatLog.INVENTORY.remove(id);
+            CombatLog.GETTER.remove(id);
         }
     }
 
@@ -92,8 +99,17 @@ public class PlayerListeners implements Listener {
         if (kicker.getType() == EntityType.PLAYER && kicked.getType() == EntityType.PLAYER){
             Player pkicked = (Player) kicked,
                     pkicker = (Player) kicker;
-            handlers.onDamage(pkicked);
-            handlers.onDamage(pkicker);
+
+            boolean isWorldD = false;
+
+            for (Object obj : plugin.getCManager().getWorlds())
+                isWorldD = kicked.getLocation().getWorld().getName().equalsIgnoreCase(obj.toString());
+
+            if (!isWorldD){
+                handlers.onDamage(pkicked);
+                handlers.onDamage(pkicker);
+            }
+
         }
     }
 

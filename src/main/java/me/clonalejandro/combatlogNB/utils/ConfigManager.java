@@ -93,8 +93,16 @@ public class ConfigManager {
     /**
      * @return
      */
-    public String getCombatMessage(){
-        return (String) Configuration.get("Combat.Message");
+    public String getCombatMessageIn(){
+        return (String) Configuration.get("Combat.MessageIn");
+    }
+
+
+    /**
+     * @return
+     */
+    public String getCombatMessageOut(){
+        return (String) Configuration.get("Combat.MessageOut");
     }
 
 

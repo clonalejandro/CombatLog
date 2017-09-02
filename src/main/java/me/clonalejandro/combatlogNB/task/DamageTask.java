@@ -3,6 +3,7 @@ package me.clonalejandro.combatlogNB.task;
 import me.clonalejandro.combatlogNB.utils.CombatLog;
 import me.clonalejandro.combatlogNB.Main;
 
+import me.clonalejandro.combatlogNB.utils.Manager;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -28,11 +29,20 @@ public class DamageTask extends BukkitRunnable {
     /** SMALL CONSTRUCTORS **/
 
     private int timeCombat;
-    private Player player;
+    private final Player player;
+    private static String MSGOUT;
+    public static String MSGIN;
+    public static boolean MESSAGER;
 
     public DamageTask(Main instance, Player player){
         this.player = player;
+
         timeCombat = instance.getCManager().getCombatTime();
+
+        MSGIN = Manager.messageColors(instance.getCManager().getCombatMessageIn());
+        MSGOUT = Manager.messageColors(instance.getCManager().getCombatMessageOut());
+
+        MESSAGER = instance.getCManager().getCombatMessager();
     }
 
 
@@ -41,12 +51,31 @@ public class DamageTask extends BukkitRunnable {
     @Override
     public void run(){
         if (timeCombat != 0)
-            timeCombat--;
+            --timeCombat;
         else {
             final int id = CombatLog.ID.get(player);
             CombatLog.ID.remove(player);
             CombatLog.INVENTORY.remove(id);
+            CombatLog.GETTER.remove(id);
+            CombatLog.TASKID.remove(player);
+
+            senderCombat(player, true);
             cancel();
+        }
+    }
+
+
+    /** OTHERS **/
+
+    /**
+     * @param isFinish
+     */
+    public static void senderCombat(Player p, boolean isFinish){
+        if (MESSAGER){
+            if (!isFinish)
+                p.sendMessage(MSGIN);
+            else
+                p.sendMessage(MSGOUT);
         }
     }
 

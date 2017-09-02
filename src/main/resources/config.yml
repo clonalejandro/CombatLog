@@ -47,7 +47,7 @@ Worlds:
 - Dos
 
 Death:
-  Message: "&9&lCLOG> &fThe player &e{KILLED} &fhas been killed by &e{KILLER}" # Message you want send when player death in CombatLog
+  Message: "&9&lCLOG> &fThe player &e{KILLED} &fwas killed by &e{KILLER}" # Message you want send when player death in CombatLog
   MessageKilled: "&9&lCLOG> &fYou has been punished" # Message whose recibe the player killed
 
 Mob:
@@ -56,8 +56,8 @@ Mob:
 
 Combat:
   Time: 15 # Time in seconds for passenger CombatLog
-  Messager: false # Enable / Disable send message while player stay in Combat
-  Message: "&9&lCLOG» &fYou are in &eCombatLog &fmode" # Only run when "Messager" is true
-
+  Messager: true # Enable / Disable send message while player stay in Combat
+  MessageIn: "&9&lCLOG» &fYou are stay in &eCombatLog &fmode" # Only run when "Messager" is true
+  MessageOut: "&9&lCLOG» &fYou leaved of the &eCombatLog &fmode" # Only run when "Messager" is true
 
 debug: true # Don't Touch

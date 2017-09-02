@@ -5,7 +5,7 @@ import me.clonalejandro.combatlogNB.utils.CombatLog;
 import me.clonalejandro.combatlogNB.utils.Manager;
 
 import org.bukkit.Location;
-import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 
 import java.lang.reflect.Method;
@@ -32,7 +32,7 @@ public class WitherSkeleton extends ReflectionAPI {
 
     /** SMALL CONSTRUCTORS **/
 
-    //none...
+    private Location loc;
 
 
     /** REST **/
@@ -43,6 +43,8 @@ public class WitherSkeleton extends ReflectionAPI {
      * @param location
      */
     public void spawn(int ID, String name, Location location){
+        loc = location;
+
         try {
             final Class<?> lastCW = getBukkitNMSClass("CraftWorld");
 
@@ -60,6 +62,9 @@ public class WitherSkeleton extends ReflectionAPI {
                     invoke(CraftWorld, entity, CreatureSpawnEvent.SpawnReason.CUSTOM);
 
             CombatLog.SURROGATE.put(ID, entity);
+
+            final Player player = CombatLog.GETTER.get(ID);
+            CombatLog.INVERSE.put(entity, player);
         }
         catch (Exception ex){ ex.printStackTrace(); }
     }
@@ -71,12 +76,10 @@ public class WitherSkeleton extends ReflectionAPI {
     public void despawn(int ID){
         Object obj = CombatLog.SURROGATE.get(ID);
 
-        Entity entity = (Entity) obj;
-
         CombatLog.SURROGATE.remove(ID);
-        Location location = entity.getLocation();
+        CombatLog.INVERSE.remove(obj);
 
-        delete(obj, location);
+        delete(obj, loc);
     }
 
 

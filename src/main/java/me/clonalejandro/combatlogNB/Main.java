@@ -34,7 +34,8 @@ public class Main extends JavaPlugin {
     public static Main instance;
 
     private DataManager dataManager;
-    private final Handlers handlers = new Handlers(instance);
+    private Handlers handlers;
+    private ConfigManager configManager;
 
 
     /** REST **/
@@ -49,12 +50,13 @@ public class Main extends JavaPlugin {
     public void onEnable(){
         try {
             instance = this;
+            handlers = new Handlers(instance);
 
             Config();
             Events();
             Commands();
 
-            //More...
+            configManager = new ConfigManager(Manager.ConfigManager());
 
             Bukkit.getConsoleSender().sendMessage(Manager.messageColors(Manager.PREFIX + "&aplugin enabled"));
         } catch (Exception ex){
@@ -106,7 +108,7 @@ public class Main extends JavaPlugin {
     /** GETTERS **/
 
     public ConfigManager getCManager(){
-        return new ConfigManager(Manager.ConfigManager());
+        return configManager;
     }
 
     public DataManager getDataManager(){

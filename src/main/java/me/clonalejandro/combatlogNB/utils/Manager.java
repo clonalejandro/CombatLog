@@ -3,7 +3,9 @@ package me.clonalejandro.combatlogNB.utils;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+
 import me.clonalejandro.combatlogNB.Main;
+
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.PluginManager;
@@ -71,7 +73,7 @@ public class Manager {
      * @param url
      * @return
      */
-    public static JsonObject getJson(String url){
+    private static JsonObject getJson(String url){
         try {
             URL cUrl = new URL(url);
             HttpURLConnection request = (HttpURLConnection) cUrl.openConnection();

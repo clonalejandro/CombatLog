@@ -6,6 +6,7 @@ import me.clonalejandro.combatlogNB.utils.Manager;
 
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -48,12 +49,12 @@ public class SurrogateListeners implements Listener {
         Entity damager = e.getDamager();
         Entity main = e.getEntity();
 
-        String prefix = plugin.getCManager().getMobName();
-        prefix = Manager.messageColors(prefix);
+        final String prefix = Manager.messageColors(plugin.getCManager().getMobName());
 
-        if ((getECName(main) == null ? getEName(main) : getECName(main)).contains("OUT")){
+        if ((getECName(main) == null ? getEName(main) : getECName(main)).contains(prefix)){
+            final Player player = CombatLog.INVERSE.get(main);
             if (damager.getType() == EntityType.PLAYER)
-                handlers.surrogateDamage();
+                handlers.surrogateDamage(main, player);
             else e.setCancelled(true);
         }
     }
@@ -63,9 +64,10 @@ public class SurrogateListeners implements Listener {
     public void onSurrogateDeath(EntityDeathEvent e){
         Entity entity = e.getEntity();
 
-        final String prefix = plugin.getCManager().getMobName();
+        final String prefix = Manager.messageColors(plugin.getCManager().getMobName());
 
-        if ((getECName(entity) == null ? getEName(entity) : getECName(entity)).contains(prefix))
+        if (e.getEntity().getKiller() != null &&
+                (getECName(entity) == null ? getEName(entity) : getECName(entity)).contains(prefix))
             handlers.surrogateDeath(e);
     }
 
