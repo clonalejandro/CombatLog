@@ -8,6 +8,7 @@ import me.clonalejandro.combatlogNB.utils.Manager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -62,14 +63,25 @@ public class PlayerListeners implements Listener {
             player.setHealth(0.0D);
         }
 
-        if (CombatLog.ID.get(player) != null){
-            Bukkit.broadcastMessage("Wayy");
-            final int id = CombatLog.ID.get(player);
-            handlers.getSurround().despawn(id);
-            CombatLog.ID.remove(player);
-            CombatLog.INVENTORY.remove(id);
-            CombatLog.GETTER.remove(id);
+        List<LivingEntity> list = player.getLocation().getWorld().getLivingEntities();
+
+        for (LivingEntity entity : list){
+            final String prefix = plugin.getCManager().getMobName();
+            String name = entity.getCustomName() == null ? entity.getName() : entity.getCustomName();
+
+            name = name.replace(" ", "");
+            name = name.replace(Manager.messageColors(prefix), "");
+            name = name.replace(Manager.messageColors("&f"), "");
+
+            if (name.equalsIgnoreCase(playerName)){
+                final int id = CombatLog.ID.get(player) == null ? help(player) : CombatLog.ID.get(player);
+                handlers.getSurround().despawn(id);
+                CombatLog.ID.remove(player);
+                CombatLog.INVENTORY.remove(id);
+                CombatLog.GETTER.remove(id);
+            }
         }
+
     }
 
 
@@ -123,6 +135,26 @@ public class PlayerListeners implements Listener {
             Data.removeData(player);
             Bukkit.getPlayer(player).sendMessage(Manager.messageColors(plugin.getCManager().getPunishMessage()));
         }
+    }
+
+
+    /** OTHERS **/
+
+    /**
+     * @param player
+     * @return
+     */
+    private Integer help(Player player){
+        int it = 0;
+        for (Integer i : CombatLog.ID.values()){
+            final String name = player.getName();
+            final Player p = CombatLog.GETTER.get(i);
+            final String str = p.getName();
+
+            if (name.equalsIgnoreCase(str))
+                it = CombatLog.ID.get(p);
+        }
+        return it;
     }
 
 

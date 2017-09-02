@@ -1,5 +1,6 @@
 package me.clonalejandro.combatlogNB;
 
+import me.clonalejandro.combatlogNB.commands.Setter;
 import me.clonalejandro.combatlogNB.data.DataManager;
 import me.clonalejandro.combatlogNB.listeners.Handlers;
 import me.clonalejandro.combatlogNB.listeners.PlayerListeners;
@@ -8,7 +9,12 @@ import me.clonalejandro.combatlogNB.utils.ConfigManager;
 import me.clonalejandro.combatlogNB.utils.Manager;
 
 import org.bukkit.Bukkit;
+import org.bukkit.World;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by alejandrorioscalera
@@ -69,6 +75,8 @@ public class Main extends JavaPlugin {
 
     @Override
     public void onDisable(){
+        Clear();
+
         try {
             Manager.getPM().disablePlugin(instance);
             Bukkit.getConsoleSender().sendMessage(Manager.messageColors(Manager.PREFIX + "&ekilling process plugin"));
@@ -86,14 +94,19 @@ public class Main extends JavaPlugin {
 
     private void Events(){
         if (Manager.LICENSED){
-            Manager.getPM().registerEvents(new PlayerListeners(instance), instance);
-            Manager.getPM().registerEvents(new SurrogateListeners(instance), instance);
+            final String state = (String) getDataManager().getData().get("data.state");
+            if (state != null && state.equalsIgnoreCase("off"))
+                Bukkit.getConsoleSender().sendMessage(Manager.messageColors(Manager.PREFIX + "&cPlugin disabled because this is in off mode"));
+            else {
+                Manager.getPM().registerEvents(new PlayerListeners(instance), instance);
+                Manager.getPM().registerEvents(new SurrogateListeners(instance), instance);
+            }
         }
     }
 
 
     private void Commands(){
-
+        getCommand("combatlog").setExecutor(new Setter(instance));
     }
 
 
@@ -102,6 +115,26 @@ public class Main extends JavaPlugin {
         dataManager = new DataManager(instance);
         dataManager.getData().set("data.players.Notch", "Notch");
         dataManager.saveData();
+    }
+
+
+    private void Clear(){
+        if (getCManager().getDebug())
+            Bukkit.getConsoleSender().sendMessage(Manager.messageColors("&bclonalejandro> &cClearing custom entities 🗑"));
+
+        List<LivingEntity> entityList = new ArrayList<>();
+
+        for (World world : Bukkit.getWorlds())
+            for (Object str : getCManager().getWorlds())
+                if (str.toString().equalsIgnoreCase(world.getName()))
+                    entityList.addAll(world.getLivingEntities());
+
+        for (LivingEntity entity : entityList){
+            final String name = entity.getCustomName() == null ? entity.getName() : entity.getCustomName();
+            final String prefix = Manager.messageColors(getCManager().getMobName());
+            if (name.contains(prefix))
+                entity.remove();
+        }
     }
 
 

@@ -43,8 +43,8 @@
 
 # PUT in "Worlds" your worlds name, you want do not use CombatLog
 Worlds:
-- Uno
-- Dos
+- One
+- Two # You can add more like this examples
 
 Death:
   Message: "&9&lCLOG> &fThe player &e{KILLED} &fwas killed by &e{KILLER}" # Message you want send when player death in CombatLog
@@ -60,4 +60,4 @@ Combat:
   MessageIn: "&9&lCLOG» &fYou are stay in &eCombatLog &fmode" # Only run when "Messager" is true
   MessageOut: "&9&lCLOG» &fYou leaved of the &eCombatLog &fmode" # Only run when "Messager" is true
 
-debug: true # Don't Touch
+Debug: true # Special debug messages

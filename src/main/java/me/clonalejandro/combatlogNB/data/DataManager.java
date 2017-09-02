@@ -70,13 +70,17 @@ public class DataManager {
 
     private void onException(Exception ex){
         ex.printStackTrace();
-        Bukkit.getConsoleSender().sendMessage(Manager.messageColors("&4&lclonalejandro[Manager]> &fHey! &cdata error!"));
+
+        if (plugin.getCManager() != null && plugin.getCManager().getDebug())
+            Bukkit.getConsoleSender().sendMessage(Manager.messageColors("&4&lclonalejandro> &fHey! &cdata error!"));
     }
 
 
     private void onSave() throws IOException {
         data.save(dataFile);
-        Bukkit.getConsoleSender().sendMessage(Manager.messageColors("&b&lclonalejandro[Manager]> &fHey! &adata saved 😍"));
+
+        if (plugin.getCManager() != null && plugin.getCManager().getDebug())
+            Bukkit.getConsoleSender().sendMessage(Manager.messageColors("&b&lclonalejandro> &fHey! &adata saved 😍"));
     }
 
 

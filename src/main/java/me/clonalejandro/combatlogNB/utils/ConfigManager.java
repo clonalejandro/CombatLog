@@ -106,4 +106,12 @@ public class ConfigManager {
     }
 
 
+    /**
+     * @return
+     */
+    public Boolean getDebug(){
+        return (Boolean) Configuration.get("Debug");
+    }
+
+
 }

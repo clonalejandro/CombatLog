@@ -1,10 +1,12 @@
 package me.clonalejandro.combatlogNB.mobs;
 
 import me.clonalejandro.ReflectionAPI.ReflectionAPI;
+import me.clonalejandro.combatlogNB.Main;
 import me.clonalejandro.combatlogNB.utils.CombatLog;
 import me.clonalejandro.combatlogNB.utils.Manager;
 
 import org.bukkit.Location;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 
@@ -98,7 +100,10 @@ public class WitherSkeleton extends ReflectionAPI {
             Object CraftWorld = lastCW.cast(location.getWorld());
             NmsWorld.getMethod("removeEntity", NmsEntity).invoke(lastCW.getMethod("getHandle").invoke(CraftWorld), entity);
         } catch (Exception ex){
-            ex.printStackTrace();
+            ((Entity)entity).remove();
+
+            if (Main.instance.getCManager().getDebug())
+                ex.printStackTrace();
         }
     }
 
