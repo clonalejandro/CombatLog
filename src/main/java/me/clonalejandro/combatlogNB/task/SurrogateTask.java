@@ -34,7 +34,7 @@ public class SurrogateTask extends BukkitRunnable {
     public SurrogateTask(Main instance, Player player){
         timeDespawn = instance.getCManager().getMobTime();
         this.player = player;
-        handlers = new Handlers(instance);
+        handlers = instance.getHandlers();
     }
 
 

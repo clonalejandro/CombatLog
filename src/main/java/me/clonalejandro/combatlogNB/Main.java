@@ -1,6 +1,7 @@
 package me.clonalejandro.combatlogNB;
 
 import me.clonalejandro.combatlogNB.data.DataManager;
+import me.clonalejandro.combatlogNB.listeners.Handlers;
 import me.clonalejandro.combatlogNB.listeners.PlayerListeners;
 import me.clonalejandro.combatlogNB.listeners.SurrogateListeners;
 import me.clonalejandro.combatlogNB.utils.ConfigManager;
@@ -33,6 +34,7 @@ public class Main extends JavaPlugin {
     public static Main instance;
 
     private DataManager dataManager;
+    private final Handlers handlers = new Handlers(instance);
 
 
     /** REST **/
@@ -109,6 +111,10 @@ public class Main extends JavaPlugin {
 
     public DataManager getDataManager(){
         return dataManager;
+    }
+
+    public Handlers getHandlers(){
+        return handlers;
     }
 
 

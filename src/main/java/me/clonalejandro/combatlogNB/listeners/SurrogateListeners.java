@@ -37,7 +37,7 @@ public class SurrogateListeners implements Listener {
 
     public SurrogateListeners(Main instance){
         plugin = instance;
-        handlers = new Handlers(instance);
+        handlers = instance.getHandlers();
     }
 
 
@@ -51,7 +51,7 @@ public class SurrogateListeners implements Listener {
         String prefix = plugin.getCManager().getMobName();
         prefix = Manager.messageColors(prefix);
 
-        if ((main.getCustomName() == null ? main.getName() : main.getCustomName()).contains("OUT")){
+        if ((getECName(main) == null ? getEName(main) : getECName(main)).contains("OUT")){
             if (damager.getType() == EntityType.PLAYER)
                 handlers.surrogateDamage();
             else e.setCancelled(true);
@@ -65,8 +65,19 @@ public class SurrogateListeners implements Listener {
 
         final String prefix = plugin.getCManager().getMobName();
 
-        if ((entity.getCustomName() == null ? entity.getName() : entity.getCustomName()).contains(prefix))
+        if ((getECName(entity) == null ? getEName(entity) : getECName(entity)).contains(prefix))
             handlers.surrogateDeath(e);
+    }
+
+
+    /** OTHERS **/
+
+    private String getECName(Entity entity){
+        return entity.getCustomName();
+    }
+
+    private String getEName(Entity entity){
+        return entity.getName();
     }
 
 

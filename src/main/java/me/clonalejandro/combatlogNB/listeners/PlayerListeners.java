@@ -42,7 +42,7 @@ public class PlayerListeners implements Listener {
     private final Main plugin;
 
     public PlayerListeners(Main instance){
-        handlers = new Handlers(instance);
+        handlers = instance.getHandlers();
         plugin = instance;
     }
 

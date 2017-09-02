@@ -145,10 +145,10 @@ public class Handlers {
 
         surround.spawn(id, name, player.getLocation());
 
-        SurrogateTask task = new SurrogateTask(plugin, player);
+        surrogateTask = new SurrogateTask(plugin, player);
 
-        task.runTaskTimer(plugin, 1L, 20L);
-        surrogateTask = task;
+        surrogateTask.runTaskTimer(plugin, 1L, 20L);
+        Bukkit.broadcastMessage("Ehto funciona ahora mihmo");
     }
 
 

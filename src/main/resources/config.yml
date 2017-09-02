@@ -49,6 +49,7 @@ Worlds:
 Death:
   Message: "&9&lCLOG> &fThe player &e{KILLED} &fhas been killed by &e{KILLER}" # Message you want send when player death in CombatLog
   MessageKilled: "&9&lCLOG> &fYou has been punished" # Message whose recibe the player killed
+
 Mob:
   Name: "&e&lOUT" # The prefix of surrogate
   Time: 600 # Time in seconds for death the surrogate
