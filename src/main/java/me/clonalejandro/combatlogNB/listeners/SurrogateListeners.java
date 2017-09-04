@@ -4,13 +4,15 @@ import me.clonalejandro.combatlogNB.Main;
 import me.clonalejandro.combatlogNB.utils.CombatLog;
 import me.clonalejandro.combatlogNB.utils.Manager;
 
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
+import org.bukkit.Material;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.EntitySpawnEvent;
+import org.bukkit.event.entity.EntityTargetEvent;
+import org.bukkit.inventory.ItemStack;
 
 /**
  * Created by alejandrorioscalera
@@ -56,6 +58,29 @@ public class SurrogateListeners implements Listener {
             if (damager.getType() == EntityType.PLAYER)
                 handlers.surrogateDamage(main, player);
             else e.setCancelled(true);
+        }
+    }
+
+
+    @EventHandler
+    public void onSurrogateTarget(EntityTargetEvent e){
+        final String prefix = Manager.messageColors(plugin.getCManager().getMobName());
+        final Entity entity = e.getEntity();
+
+        if ((getECName(entity) == null ? getEName(entity) : getECName(entity)).contains(prefix))
+            e.setCancelled(true);
+    }
+
+
+    @EventHandler
+    public void onSurrogateSpawn(EntitySpawnEvent e){
+        final Entity main = e.getEntity();
+        final String prefix = Manager.messageColors(plugin.getCManager().getMobName());
+
+        if ((getECName(main) == null ? getEName(main) : getECName(main)).contains(prefix)){
+            Skeleton skeleton = (Skeleton) e.getEntity();
+            skeleton.setTarget(null);
+            skeleton.getEquipment().setItemInHand(new ItemStack(Material.AIR));
         }
     }
 

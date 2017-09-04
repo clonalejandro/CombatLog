@@ -114,7 +114,7 @@ public class WitherSkeleton extends ReflectionAPI {
      * @param location
      * @throws Exception
      */
-    private void configure(Object entity, String name, Location location) throws Exception{
+    private void configure(Object entity, String name, Location location) throws Exception {
         Method setWither = entity.getClass().getMethod("setSkeletonType", int.class);
         Method setCustomName = entity.getClass().getMethod("setCustomName", String.class);
         Method setCustomNameVisible = entity.getClass().getMethod("setCustomNameVisible", boolean.class);

@@ -38,6 +38,7 @@ public class Manager {
 
     /** SMALL CONSTRUCTORS **/
 
+    public static final String SPACE = " ";
     public static final String PREFIX = messageColors("&d&lCombatLog> &f");
     public static final Boolean LICENSED = getLicense();
 

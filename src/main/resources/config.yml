@@ -52,6 +52,7 @@ Death:
 
 Mob:
   Name: "&e&lOUT" # The prefix of surrogate
+  Color: "&f" # Color of the name mob
   Time: 600 # Time in seconds for death the surrogate
 
 Combat:

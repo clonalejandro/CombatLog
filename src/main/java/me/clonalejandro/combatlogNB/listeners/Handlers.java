@@ -101,11 +101,12 @@ public class Handlers {
         Player p = null;
 
         final String prefix = plugin.getCManager().getMobName();
+        final String color = plugin.getCManager().getMobColor();
         String name = entity.getCustomName() == null ? entity.getName() : entity.getCustomName();
 
-        name = name.replace(" ", "");//Clear empty spaces
+        name = name.replace(Manager.SPACE, "");//Clear empty spaces
         name = name.replace(Manager.messageColors(prefix), "");//Remove prefix
-        name = name.replace(Manager.messageColors("&f"), "");//Fix without color name
+        name = name.replace(Manager.messageColors(color), "");//Fix without color name
 
         for (Integer i : CombatLog.ID.values()){
             final Player lp = CombatLog.GETTER.get(i);
@@ -136,12 +137,14 @@ public class Handlers {
         e.getDrops().clear();
 
         final Entity entity = e.getEntity();
-        String name = entity.getCustomName() == null ? entity.getName() : entity.getCustomName();
         final String prefix = plugin.getCManager().getMobName();
+        final String color = plugin.getCManager().getMobColor();
 
-        name = name.replace(" ", "");//Clear empty spaces
+        String name = entity.getCustomName() == null ? entity.getName() : entity.getCustomName();
+
+        name = name.replace(Manager.SPACE, "");//Clear empty spaces
         name = name.replace(Manager.messageColors(prefix), "");//Clear prefix
-        name = name.replace(Manager.messageColors("&f"), "");//Clear white name
+        name = name.replace(Manager.messageColors(color), "");//Clear white name
 
         Player player = null;
 
@@ -197,7 +200,8 @@ public class Handlers {
      */
     private void leaveFunctions(Player player){
         final int id = CombatLog.ID.get(player);
-        final String name = Manager.messageColors(plugin.getCManager().getMobName() + " &f" + player.getName());
+        final String color = plugin.getCManager().getMobColor();
+        final String name = Manager.messageColors(plugin.getCManager().getMobName() + Manager.SPACE + color + player.getName());
 
         surround.spawn(id, name, player.getLocation());
 

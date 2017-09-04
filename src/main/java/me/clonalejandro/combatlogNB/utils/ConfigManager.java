@@ -69,6 +69,14 @@ public class ConfigManager {
     /**
      * @return
      */
+    public String getMobColor(){
+        return (String) Configuration.get("Mob.Color");
+    }
+
+
+    /**
+     * @return
+     */
     public Integer getMobTime(){
         return (Integer) Configuration.get("Mob.Time");
     }
