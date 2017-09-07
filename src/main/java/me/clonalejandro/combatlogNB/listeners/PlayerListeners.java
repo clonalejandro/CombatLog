@@ -79,6 +79,7 @@ public class PlayerListeners implements Listener {
                 CombatLog.ID.remove(player);
                 CombatLog.INVENTORY.remove(id);
                 CombatLog.GETTER.remove(id);
+                CombatLog.TASKSURROUNDER.remove(id);
             }
         }
 
