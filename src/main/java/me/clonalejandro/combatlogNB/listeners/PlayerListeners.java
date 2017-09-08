@@ -6,10 +6,8 @@ import me.clonalejandro.combatlogNB.Main;
 import me.clonalejandro.combatlogNB.utils.Manager;
 
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
+import org.bukkit.GameMode;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -18,7 +16,6 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -67,29 +64,31 @@ public class PlayerListeners implements Listener {
 
         for (LivingEntity entity : list){
             final String prefix = plugin.getCManager().getMobName();
+            final String color = plugin.getCManager().getMobColor();
             String name = entity.getCustomName() == null ? entity.getName() : entity.getCustomName();
 
             name = name.replace(" ", "");
             name = name.replace(Manager.messageColors(prefix), "");
-            name = name.replace(Manager.messageColors("&f"), "");
+            name = name.replace(Manager.messageColors(color), "");
 
             if (name.equalsIgnoreCase(playerName)){
-                final int id = CombatLog.ID.get(player) == null ? help(player) : CombatLog.ID.get(player);
-                handlers.getSurround().despawn(id);
-                CombatLog.ID.remove(player);
-                CombatLog.INVENTORY.remove(id);
-                CombatLog.GETTER.remove(id);
-                CombatLog.TASKSURROUNDER.remove(id);
+                if (CombatLog.ID.containsKey(player)){
+                    final int id = CombatLog.ID.get(player) == null ? help(player) : CombatLog.ID.get(player);
+                    handlers.getSurround().despawn(id);
+                    CombatLog.ID.remove(player);
+                    CombatLog.INVENTORY.remove(id);
+                    CombatLog.GETTER.remove(id);
+                    CombatLog.TASKSURROUNDER.remove(id);
+                }
+                else entity.remove();
             }
         }
-
     }
 
 
     @EventHandler
     public void onPlayerLeave(PlayerQuitEvent e){
         Player player = e.getPlayer();
-
         if (CombatLog.ID.get(player) != null)
             handlers.onLeave(player);
     }
@@ -98,7 +97,6 @@ public class PlayerListeners implements Listener {
     @EventHandler
     public void onPlayerKick(PlayerKickEvent e){
         Player player = e.getPlayer();
-
         if (CombatLog.ID.get(player) != null)
             handlers.onLeave(player);
     }
@@ -109,20 +107,43 @@ public class PlayerListeners implements Listener {
         Entity kicked = e.getEntity(),
                 kicker = e.getDamager();
 
-        if (kicker.getType() == EntityType.PLAYER && kicked.getType() == EntityType.PLAYER){
-            Player pkicked = (Player) kicked,
-                    pkicker = (Player) kicker;
+        if (kicked.getType() == EntityType.PLAYER){
 
+            Player pkicked = (Player) kicked, pkicker = null;
+
+            switch (kicker.getType()){
+                case PLAYER:
+                    pkicker = (Player) kicker;
+                    break;
+                case ARROW:
+                    Arrow arrow = (Arrow) kicker;
+                    pkicker = (Player) arrow.getShooter();
+                    break;
+                case FISHING_HOOK:
+                    FishHook fishHook = (FishHook) kicker;
+                    pkicker = (Player) fishHook.getShooter();
+                    break;
+                case SNOWBALL:
+                    Snowball snowball = (Snowball) kicker;
+                    pkicker = (Player) snowball.getShooter();
+                    break;
+                case EGG:
+                    Egg egg = (Egg) kicker;
+                    pkicker = (Player) egg.getShooter();
+                    break;
+            }
+            assert pkicker != null;
+
+            boolean isGamemode = pkicker.getGameMode() == GameMode.SURVIVAL || pkicker.getGameMode() == GameMode.ADVENTURE;
             boolean isWorldD = false;
 
             for (Object obj : plugin.getCManager().getWorlds())
                 isWorldD = kicked.getLocation().getWorld().getName().equalsIgnoreCase(obj.toString());
 
-            if (!isWorldD){
+            if (!isWorldD && isGamemode){
                 handlers.onDamage(pkicked);
                 handlers.onDamage(pkicker);
             }
-
         }
     }
 
@@ -130,12 +151,16 @@ public class PlayerListeners implements Listener {
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent e){
         final String player = e.getEntity().getName();
+        final Player p = e.getEntity();
 
         if (Data.haveData(player)) {
             e.setDeathMessage(null);
             Data.removeData(player);
             Bukkit.getPlayer(player).sendMessage(Manager.messageColors(plugin.getCManager().getPunishMessage()));
         }
+
+        if (CombatLog.ID.get(p) != null)
+            handlers.onDeath(p);
     }
 
 
@@ -150,6 +175,8 @@ public class PlayerListeners implements Listener {
         for (Integer i : CombatLog.ID.values()){
             final String name = player.getName();
             final Player p = CombatLog.GETTER.get(i);
+
+            assert p != null;
             final String str = p.getName();
 
             if (name.equalsIgnoreCase(str))

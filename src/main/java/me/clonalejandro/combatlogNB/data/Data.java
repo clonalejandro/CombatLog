@@ -2,7 +2,6 @@ package me.clonalejandro.combatlogNB.data;
 
 import me.clonalejandro.combatlogNB.Main;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 /**

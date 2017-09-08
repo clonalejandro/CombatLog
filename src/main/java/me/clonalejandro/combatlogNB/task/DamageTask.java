@@ -2,8 +2,8 @@ package me.clonalejandro.combatlogNB.task;
 
 import me.clonalejandro.combatlogNB.utils.CombatLog;
 import me.clonalejandro.combatlogNB.Main;
-
 import me.clonalejandro.combatlogNB.utils.Manager;
+
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 

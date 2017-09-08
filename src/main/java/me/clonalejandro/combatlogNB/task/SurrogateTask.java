@@ -4,7 +4,6 @@ import me.clonalejandro.combatlogNB.Main;
 import me.clonalejandro.combatlogNB.listeners.Handlers;
 import me.clonalejandro.combatlogNB.utils.CombatLog;
 
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 

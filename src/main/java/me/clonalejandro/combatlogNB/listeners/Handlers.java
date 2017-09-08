@@ -85,6 +85,22 @@ public class Handlers {
     /**
      * @param player
      */
+    void onDeath(Player player){
+        final int id = CombatLog.TASKID.get(player);
+        final int ID = CombatLog.ID.get(player);
+
+        Bukkit.getScheduler().cancelTask(id);
+
+        CombatLog.TASKID.remove(player);
+        CombatLog.ID.remove(player);
+        CombatLog.INVENTORY.remove(ID);
+        CombatLog.GETTER.remove(ID);
+    }
+
+
+    /**
+     * @param player
+     */
     void onLeave(Player player){
         int id = CombatLog.TASKID.get(player);
         Bukkit.getScheduler().cancelTask(id);
@@ -162,6 +178,7 @@ public class Handlers {
 
         int taskID = CombatLog.TASKSURROUNDER.get(id);
         Bukkit.getScheduler().cancelTask(taskID);
+        CombatLog.TASKSURROUNDER.remove(id);
 
         ItemStack[] items = inventory.getContents();
 
@@ -175,10 +192,12 @@ public class Handlers {
         message = message.replace("{KILLER}", killer.getName());
 
         Bukkit.broadcastMessage(Manager.messageColors(message));
+        final Object obj = CombatLog.SURROGATE.get(id);
 
         CombatLog.ID.remove(player);
         CombatLog.INVENTORY.remove(id);
         CombatLog.SURROGATE.remove(id);
+        CombatLog.INVERSE.remove(obj);
         CombatLog.GETTER.remove(id);
 
         new Data(plugin, player);
