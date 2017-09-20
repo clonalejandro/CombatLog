@@ -122,4 +122,12 @@ public class ConfigManager {
     }
 
 
+    /**
+     * @return
+     */
+    public Boolean getDebugDrops(){
+        return (Boolean) Configuration.get("DebugDrops");
+    }
+
+
 }

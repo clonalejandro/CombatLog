@@ -69,8 +69,11 @@ public class Setter implements CommandExecutor {
      * @param sender
      */
     private void pinfo(CommandSender sender){
+        final String version = Main.instance.getDescription().getVersion();
+
         sender.sendMessage(Manager.messageColors("&f** &d&lCombatLog &f**"));
         sender.sendMessage(Manager.messageColors("&aPlugin developed by: &eclonalejandro"));
+        sender.sendMessage(Manager.messageColors("&aPlugin version: &e" + version));
         sender.sendMessage(Manager.messageColors("&b/combatlog &e<on/off>&f: Put this plugin enabled/disabled"));
     }
 

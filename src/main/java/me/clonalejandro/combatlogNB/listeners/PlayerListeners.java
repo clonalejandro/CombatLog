@@ -9,6 +9,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -50,7 +51,7 @@ public class PlayerListeners implements Listener {
 
     /** REST **/
 
-    @EventHandler
+    @EventHandler (priority = EventPriority.MONITOR)
     public void onPlayerJoin(PlayerJoinEvent e){
         final String playerName = e.getPlayer().getName();
         final Player player = e.getPlayer();
@@ -67,18 +68,22 @@ public class PlayerListeners implements Listener {
             final String color = plugin.getCManager().getMobColor();
             String name = entity.getCustomName() == null ? entity.getName() : entity.getCustomName();
 
-            name = name.replace(" ", "");
+            name = name.replace(Manager.SPACE, "");
             name = name.replace(Manager.messageColors(prefix), "");
             name = name.replace(Manager.messageColors(color), "");
 
             if (name.equalsIgnoreCase(playerName)){
                 if (CombatLog.ID.containsKey(player)){
                     final int id = CombatLog.ID.get(player) == null ? help(player) : CombatLog.ID.get(player);
+                    final int taskId = CombatLog.TASKSURROUNDER.get(id);
+
                     handlers.getSurround().despawn(id);
                     CombatLog.ID.remove(player);
                     CombatLog.INVENTORY.remove(id);
                     CombatLog.GETTER.remove(id);
                     CombatLog.TASKSURROUNDER.remove(id);
+                    try { Bukkit.getScheduler().cancelTask(taskId); }
+                    catch (Exception ignored) { return; }
                 }
                 else entity.remove();
             }
@@ -86,32 +91,32 @@ public class PlayerListeners implements Listener {
     }
 
 
-    @EventHandler
+    @EventHandler (priority = EventPriority.MONITOR)
     public void onPlayerLeave(PlayerQuitEvent e){
         Player player = e.getPlayer();
-        if (CombatLog.ID.get(player) != null)
+        if (CombatLog.ID.containsKey(player))
             handlers.onLeave(player);
     }
 
 
-    @EventHandler
+    @EventHandler (priority = EventPriority.MONITOR)
     public void onPlayerKick(PlayerKickEvent e){
         Player player = e.getPlayer();
-        if (CombatLog.ID.get(player) != null)
+        if (CombatLog.ID.containsKey(player))
             handlers.onLeave(player);
     }
 
 
-    @EventHandler
+    @EventHandler (priority = EventPriority.MONITOR)
     public void onPlayerDamage(EntityDamageByEntityEvent e){
         Entity kicked = e.getEntity(),
                 kicker = e.getDamager();
 
-        if (kicked.getType() == EntityType.PLAYER){
+        if (kicked.getType() == EntityType.PLAYER) {
 
             Player pkicked = (Player) kicked, pkicker = null;
 
-            switch (kicker.getType()){
+            switch (kicker.getType()) {
                 case PLAYER:
                     pkicker = (Player) kicker;
                     break;
@@ -132,23 +137,30 @@ public class PlayerListeners implements Listener {
                     pkicker = (Player) egg.getShooter();
                     break;
             }
-            assert pkicker != null;
 
-            boolean isGamemode = pkicker.getGameMode() == GameMode.SURVIVAL || pkicker.getGameMode() == GameMode.ADVENTURE;
+            if (pkicker == null) throw new RuntimeException();
+
+            boolean isGamemode = pkicker.getGameMode() == GameMode.SURVIVAL;
             boolean isWorldD = false;
 
             for (Object obj : plugin.getCManager().getWorlds())
                 isWorldD = kicked.getLocation().getWorld().getName().equalsIgnoreCase(obj.toString());
 
-            if (!isWorldD && isGamemode){
-                handlers.onDamage(pkicked);
-                handlers.onDamage(pkicker);
+            boolean isOn = plugin.getDataManager().getData().get("data.state") != null && (plugin.getDataManager().getData().get("data.state").toString().equalsIgnoreCase("on"));
+
+            if (isOn){
+                if (!isWorldD && isGamemode) {
+                    handlers.onDamage(pkicked);
+                    handlers.onDamage(pkicker);
+                }
             }
+            else
+                Bukkit.getConsoleSender().sendMessage(Manager.messageColors(Manager.PREFIX + "&cPlugin disabled because this is in off mode"));
         }
     }
 
 
-    @EventHandler
+    @EventHandler (priority = EventPriority.MONITOR)
     public void onPlayerDeath(PlayerDeathEvent e){
         final String player = e.getEntity().getName();
         final Player p = e.getEntity();
@@ -159,7 +171,7 @@ public class PlayerListeners implements Listener {
             Bukkit.getPlayer(player).sendMessage(Manager.messageColors(plugin.getCManager().getPunishMessage()));
         }
 
-        if (CombatLog.ID.get(p) != null)
+        if (CombatLog.ID.containsKey(p))
             handlers.onDeath(p);
     }
 

@@ -59,7 +59,7 @@ public class DamageTask extends BukkitRunnable {
             CombatLog.GETTER.remove(id);
             CombatLog.TASKID.remove(player);
 
-            senderCombat(player, true);
+            senderCombat(player);
             cancel();
         }
     }
@@ -68,15 +68,11 @@ public class DamageTask extends BukkitRunnable {
     /** OTHERS **/
 
     /**
-     * @param isFinish
+     * @param p
      */
-    public static void senderCombat(Player p, boolean isFinish){
-        if (MESSAGER){
-            if (!isFinish)
-                p.sendMessage(MSGIN);
-            else
-                p.sendMessage(MSGOUT);
-        }
+    private static void senderCombat(Player p){
+        if (MESSAGER)
+            p.sendMessage(MSGOUT);
     }
 
 

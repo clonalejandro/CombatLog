@@ -1,17 +1,14 @@
 package me.clonalejandro.combatlogNB.listeners;
 
 import me.clonalejandro.combatlogNB.Main;
-import me.clonalejandro.combatlogNB.utils.CombatLog;
 import me.clonalejandro.combatlogNB.utils.Manager;
 
 import org.bukkit.Material;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.entity.EntitySpawnEvent;
-import org.bukkit.event.entity.EntityTargetEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.inventory.ItemStack;
 
 /**
@@ -46,7 +43,7 @@ public class SurrogateListeners implements Listener {
 
     /** REST **/
 
-    @EventHandler
+    @EventHandler (priority = EventPriority.MONITOR)
     public void onDamageSurrogate(EntityDamageByEntityEvent e){
         Entity damager = e.getDamager();
         Entity main = e.getEntity();
@@ -54,15 +51,25 @@ public class SurrogateListeners implements Listener {
         final String prefix = Manager.messageColors(plugin.getCManager().getMobName());
 
         if ((getECName(main) == null ? getEName(main) : getECName(main)).contains(prefix)){
-            final Player player = CombatLog.INVERSE.get(main);
             if (damager.getType() == EntityType.PLAYER)
-                handlers.surrogateDamage(main, player);
+                handlers.surrogateDamage(main);
             else e.setCancelled(true);
         }
     }
 
 
-    @EventHandler
+    @EventHandler (priority = EventPriority.MONITOR)
+    public void onSoffocateSurrogate(EntityDamageEvent e){
+        final Entity entity = e.getEntity();
+        final String prefix = Manager.messageColors(plugin.getCManager().getMobName());
+        final boolean isSurrogate = (getECName(entity) == null ? getEName(entity) : getECName(entity)).contains(prefix);
+
+        if (isSurrogate && e.getCause() == EntityDamageEvent.DamageCause.SUFFOCATION)
+            e.setCancelled(true);
+    }
+
+
+    @EventHandler (priority = EventPriority.MONITOR)
     public void onSurrogateTarget(EntityTargetEvent e){
         final String prefix = Manager.messageColors(plugin.getCManager().getMobName());
         final Entity entity = e.getEntity();
@@ -72,7 +79,7 @@ public class SurrogateListeners implements Listener {
     }
 
 
-    @EventHandler
+    @EventHandler (priority = EventPriority.MONITOR)
     public void onSurrogateSpawn(EntitySpawnEvent e){
         final Entity main = e.getEntity();
         final String prefix = Manager.messageColors(plugin.getCManager().getMobName());
@@ -85,7 +92,7 @@ public class SurrogateListeners implements Listener {
     }
 
 
-    @EventHandler
+    @EventHandler (priority = EventPriority.MONITOR)
     public void onSurrogateDeath(EntityDeathEvent e){
         Entity entity = e.getEntity();
 
@@ -99,10 +106,19 @@ public class SurrogateListeners implements Listener {
 
     /** OTHERS **/
 
+    /**
+     * @param entity
+     * @return
+     */
     private String getECName(Entity entity){
         return entity.getCustomName();
     }
 
+
+    /**
+     * @param entity
+     * @return
+     */
     private String getEName(Entity entity){
         return entity.getName();
     }

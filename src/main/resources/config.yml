@@ -61,4 +61,5 @@ Combat:
   MessageIn: "&9&lCLOG» &fYou are stay in &eCombatLog &fmode" # Only run when "Messager" is true
   MessageOut: "&9&lCLOG» &fYou leaved of the &eCombatLog &fmode" # Only run when "Messager" is true
 
+DebugDrops: false # Use other system for drops
 Debug: true # Special debug messages

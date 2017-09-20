@@ -7,7 +7,10 @@ import com.google.gson.JsonParser;
 import me.clonalejandro.combatlogNB.Main;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 
 import java.io.InputStream;
@@ -69,6 +72,28 @@ public class Manager {
         return ChatColor.translateAlternateColorCodes('&', message);
     }
 
+
+    public static Location extractor(Player player){
+        final Location location = player.getLocation();
+
+        World world;
+        double x, y, z;
+        float yaw, pitch;
+
+        world = location.getWorld();
+
+        x = location.getX();
+        y = location.getY() + 1;
+        z = location.getZ();
+
+        yaw = location.getYaw();
+        pitch = location.getPitch();
+
+        return new Location(world, x, y, z, yaw, pitch);
+    }
+
+
+    /** OTHERS **/
 
     /**
      * @param url

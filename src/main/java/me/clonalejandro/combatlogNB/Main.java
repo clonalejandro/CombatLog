@@ -94,13 +94,8 @@ public class Main extends JavaPlugin {
 
     private void Events(){
         if (Manager.LICENSED){
-            final String state = (String) getDataManager().getData().get("data.state");
-            if (state != null && state.equalsIgnoreCase("off"))
-                Bukkit.getConsoleSender().sendMessage(Manager.messageColors(Manager.PREFIX + "&cPlugin disabled because this is in off mode"));
-            else {
-                Manager.getPM().registerEvents(new PlayerListeners(instance), instance);
-                Manager.getPM().registerEvents(new SurrogateListeners(instance), instance);
-            }
+            Manager.getPM().registerEvents(new PlayerListeners(instance), instance);
+            Manager.getPM().registerEvents(new SurrogateListeners(instance), instance);
         }
     }
 

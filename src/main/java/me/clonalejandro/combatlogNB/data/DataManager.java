@@ -69,17 +69,21 @@ public class DataManager {
 
     /** OTHERS **/
 
+    /**
+     * @param ex
+     */
     private void onException(Exception ex){
         ex.printStackTrace();
-
         if (plugin.getCManager() != null && plugin.getCManager().getDebug())
             Bukkit.getConsoleSender().sendMessage(Manager.messageColors("&4&lclonalejandro> &fHey! &cdata error!"));
     }
 
 
+    /**
+     * @throws IOException
+     */
     private void onSave() throws IOException {
         data.save(dataFile);
-
         if (plugin.getCManager() != null && plugin.getCManager().getDebug())
             Bukkit.getConsoleSender().sendMessage(Manager.messageColors("&b&lclonalejandro> &fHey! &adata saved 😍"));
     }

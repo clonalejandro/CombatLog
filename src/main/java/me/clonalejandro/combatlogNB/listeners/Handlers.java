@@ -9,6 +9,7 @@ import me.clonalejandro.combatlogNB.task.DamageTask;
 import me.clonalejandro.combatlogNB.utils.Manager;
 
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDeathEvent;
@@ -51,9 +52,9 @@ public class Handlers {
      * @param player
      */
     void onDamage(Player player){
-        Inventory inventory = player.getInventory();
+        final Inventory inventory = player.getInventory();
 
-        if (CombatLog.ID.get(player) == null){
+        if (CombatLog.ID.containsKey(player)){
             if (DamageTask.MESSAGER)
                 player.sendMessage(DamageTask.MSGIN);
 
@@ -69,7 +70,7 @@ public class Handlers {
             CombatLog.TASKID.put(player, task.getTaskId());
         }
         else {
-            int id = CombatLog.TASKID.get(player);
+            final int id = CombatLog.TASKID.get(player);
 
             Bukkit.getScheduler().cancelTask(id);
             CombatLog.TASKID.remove(player);
@@ -111,9 +112,9 @@ public class Handlers {
 
     /**
      * @param entity
-     * @param player
+     * @throws RuntimeException
      */
-    void surrogateDamage(Entity entity, Player player){
+    void surrogateDamage(Entity entity) throws RuntimeException{
         Player p = null;
 
         final String prefix = plugin.getCManager().getMobName();
@@ -131,7 +132,7 @@ public class Handlers {
                 p = lp;
         }
 
-        assert p != null;
+        if (p == null) throw new RuntimeException();
 
         final int id = CombatLog.ID.get(p);
         final int taskID = CombatLog.TASKSURROUNDER.get(id);
@@ -139,7 +140,7 @@ public class Handlers {
         Bukkit.getScheduler().cancelTask(taskID);
         CombatLog.TASKSURROUNDER.remove(id);
 
-        SurrogateTask task = new SurrogateTask(plugin, player);
+        SurrogateTask task = new SurrogateTask(plugin, p);
         task.runTaskTimer(plugin, 1L, 20L);
 
         CombatLog.TASKSURROUNDER.put(id, task.getTaskId());
@@ -171,23 +172,33 @@ public class Handlers {
                 player = p;
         }
 
-        final Player killer = e.getEntity().getKiller();
+        if (player == null) throw new RuntimeException();
 
+        final Player killer = e.getEntity().getKiller();
         final int id = CombatLog.ID.get(player);
         final Inventory inventory = CombatLog.INVENTORY.get(id);
+
+
+        /** REMOVE TASK **/
 
         int taskID = CombatLog.TASKSURROUNDER.get(id);
         Bukkit.getScheduler().cancelTask(taskID);
         CombatLog.TASKSURROUNDER.remove(id);
 
+
         ItemStack[] items = inventory.getContents();
 
-        for (ItemStack item : items)
-            e.getDrops().add(item);
+        boolean debug = plugin.getCManager().getDebugDrops();
+
+        if (debug)
+            for (ItemStack item : items)
+                killer.getInventory().addItem(item);
+        else
+            for (ItemStack item : items)
+                e.getDrops().add(item);
 
         String message = plugin.getCManager().getDeathMessage();
 
-        assert player != null;
         message = message.replace("{KILLED}", player.getName());
         message = message.replace("{KILLER}", killer.getName());
 
@@ -222,12 +233,20 @@ public class Handlers {
         final String color = plugin.getCManager().getMobColor();
         final String name = Manager.messageColors(plugin.getCManager().getMobName() + Manager.SPACE + color + player.getName());
 
-        surround.spawn(id, name, player.getLocation());
+        if (player.getGameMode() == GameMode.SURVIVAL) {
+            surround.spawn(id, name, Manager.extractor(player));
 
-        SurrogateTask task = new SurrogateTask(plugin, player);
-        task.runTaskTimer(plugin, 1L, 20L);
+            SurrogateTask task = new SurrogateTask(plugin, player);
+            task.runTaskTimer(plugin, 1L, 20L);
 
-        CombatLog.TASKSURROUNDER.put(id, task.getTaskId());
+            CombatLog.TASKSURROUNDER.put(id, task.getTaskId());
+        } else {
+            CombatLog.ID.remove(player);
+            CombatLog.GETTER.remove(id);
+            CombatLog.INVENTORY.remove(id);
+            if (CombatLog.TASKID.containsKey(player))
+                CombatLog.TASKID.remove(player);
+        }
     }
 
 
